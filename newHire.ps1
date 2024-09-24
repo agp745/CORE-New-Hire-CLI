@@ -5,10 +5,6 @@ param (
 	[switch]$Print
 )
 
-# util variables
-$boldStart = "`e[1m"
-$boldEnd = "`e[0m"
-
 $sourceDir = "C:\Users\AlejandroPerez\OneDrive - CCG Services, Inc\Documents\Onboarding"
 $destinationDir = "C:\Users\AlejandroPerez\OneDrive - CCG Services, Inc\Documents\Onboarding\NewHires"
 
@@ -19,7 +15,10 @@ if (-not $Name) {
 	Write-Output "No name provided. Please provide a name"
 }
 
+# ======================================
 # Copy and Move file
+# ======================================
+
 try {
 	Copy-Item -Path "$sourceDir\$contactInfoFile" -Destination "$destinationDir\$Name.docx"
 	Copy-Item -Path "$sourceDir\$emailFile" -Destination "$destinationDir\$Name.msg"
@@ -28,7 +27,10 @@ try {
 	return
 }
 
+# =======================================
 # Print validation
+# =======================================
+
 if ($Print) {
 	$defaultPrinter = Get-WmiObject -Query "SELECT * FROM Win32_Printer WHERE Default=$true"
 	$printerName = $defaultPrinter.Name
@@ -36,16 +38,19 @@ if ($Print) {
 
 function printDoc {
 	param (
-		[string]$PrintMessage = "You are about to print to $printerName. Do you wish to continue? [y/n]"
+		[string]$PrintWarning = "Do you wish to continue? [y/n]`n(select 'n' to edit print job)"
 	)
+	Write-Host -ForegroundColor DarkYellow "`nYou are about to print to " -NoNewLine
+	Write-Host -ForegroundColor White "$printerName" -NoNewLine
+	Write-Host -ForegroundColor DarkYellow "..."
 
 	while ($true) {
-		$response = Read-Host $PrintMessage
+		$response = Read-Host $PrintWarning
 		if ($response -eq "y" -or $response -eq "Y") {
-			Write-Output "processing print job..."
+			Write-Host -ForegroundColor DarkGray "`nprocessing print job..."
 			return $true
 		} elseif ($response -eq "n" -or $response -eq "N") {
-			Write-Output "canceling print job..."
+			Write-Host -ForegroundColor DarkGray "`npausing print job..."
 			return $false
 		} else {
 			Write-Host "Invalid input. Please enter 'y' or 'n'."
@@ -55,7 +60,9 @@ function printDoc {
 
 $isPrinting = printDoc #printDoc is invoked here to confirm print option BEFORE everything else is processed
 
+# =======================================
 # Edit word doc
+# =======================================
 
 $filePath = "$destinationDir\$Name.docx"
 $Word = New-Object -ComObject Word.Application
@@ -115,18 +122,24 @@ Fill-Field -Field "Email:" -Value $Name
 Fill-Field -Field "Password" -Value $PW
 
 $Document.Save()
+
 # print document after document is processed 
 if ($isPrinting -eq $true) {
-	Write-Host "printing..." -ForegroundColor Yellow
+	Write-Host -ForegroundColor Yellow "`nprinting..." 
 	$Document.PrintOut()
+} else {
+	$Word.Dialogs.Item(88).Show() # opens print options
 }
+	
 
-# optional document & word close
+# =======================================
+# optional - close the document & Word
+# =======================================
+
 # $Document.Close()
 # $Word.Quit()
 
-# Write-Host "Files for $Name created successfully!`n"
-Write-Host -ForegroundColor Green "files for " -NoNewLine
+Write-Host -ForegroundColor Green "`nfiles for " -NoNewLine
 Write-Host -ForegroundColor White "$Name " -NoNewLine
-Write-Host -ForegroundColor Green "created sucessfully!"
+Write-Host -ForegroundColor Green "created sucessfully!`n"
 
