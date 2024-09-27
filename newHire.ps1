@@ -9,7 +9,7 @@ $User = $env:USERNAME
 
 $CCGSourceDir = "C:\Users\$User\CCG Services, Inc\CORE Technology - Documents\IT\Communication"
 $DestinationDir = "C:\Users\$User\OneDrive - CCG Services, Inc\Documents\NewHires"
-# $sourceDir = "C:\Users\$User\OneDrive - CCG Services, Inc\Documents\Onboarding"
+
 $ContactInfoFile = "IT Contact Information.docx"
 $EmailFile = "IT SUPPORT - Getting started.msg"
 
@@ -157,4 +157,5 @@ if ($isPrinting -eq $true) {
 
 Write-Host -ForegroundColor Green "`nfiles for " -NoNewLine
 Write-Host -ForegroundColor White "$Name " -NoNewLine
-Write-Host -ForegroundColor Green "saved at '$DestinationDir'`n"
+Write-Host -ForegroundColor Green "saved at " -NoNewline
+Write-Host -ForegroundColor White "$DestinationDir`n"
