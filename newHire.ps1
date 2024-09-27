@@ -5,14 +5,30 @@ param (
 	[switch]$Print
 )
 
-$sourceDir = "C:\Users\AlejandroPerez\OneDrive - CCG Services, Inc\Documents\Onboarding"
-$destinationDir = "C:\Users\AlejandroPerez\OneDrive - CCG Services, Inc\Documents\Onboarding\NewHires"
+$User = $env:USERNAME
 
-$contactInfoFile = "IT Contact Information.docx"
-$emailFile = "IT SUPPORT - Getting started.msg"
+$CCGSourceDir = "C:\Users\$User\CCG Services, Inc\CORE Technology - Documents\IT\Communication"
+$DestinationDir = "C:\Users\$User\OneDrive - CCG Services, Inc\Documents\NewHires"
+# $sourceDir = "C:\Users\$User\OneDrive - CCG Services, Inc\Documents\Onboarding"
+$ContactInfoFile = "IT Contact Information.docx"
+$EmailFile = "IT SUPPORT - Getting started.msg"
 
 if (-not $Name) {
-	Write-Output "No name provided. Please provide a name"
+	Write-Host -ForegroundColor Red "Error: no name provided. use '-Name' to specify a name"
+    return
+}
+if (-not $PW) {
+	Write-Host -ForegroundColor Red "Error: no password provided. use '-PW' to specify a password"
+    return
+}
+
+# ======================================
+# Check if destination dir exists
+# ======================================
+
+if (-not(Test-Path $DestinationDir -PathType Container)) {
+    Write-Host -ForegroundColor DarkGray "`ncreating destination dir '$DestinationDir'..."
+    New-Item -Path $DestinationDir -ItemType Directory
 }
 
 # ======================================
@@ -20,8 +36,8 @@ if (-not $Name) {
 # ======================================
 
 try {
-	Copy-Item -Path "$sourceDir\$contactInfoFile" -Destination "$destinationDir\$Name.docx"
-	Copy-Item -Path "$sourceDir\$emailFile" -Destination "$destinationDir\$Name.msg"
+	Copy-Item -Path "$CCGSourceDir\$ContactInfoFile" -Destination "$destinationDir\$Name.docx"
+	Copy-Item -Path "$CCGSourceDir\$EmailFile" -Destination "$destinationDir\$Name.msg"
 } catch {
 	Write-Error "Failed to copy & move files for $Name. File might already exist or is currently open."
 	return
@@ -141,5 +157,4 @@ if ($isPrinting -eq $true) {
 
 Write-Host -ForegroundColor Green "`nfiles for " -NoNewLine
 Write-Host -ForegroundColor White "$Name " -NoNewLine
-Write-Host -ForegroundColor Green "created sucessfully!`n"
-
+Write-Host -ForegroundColor Green "saved at '$DestinationDir'`n"
