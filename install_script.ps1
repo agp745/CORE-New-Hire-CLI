@@ -1,10 +1,12 @@
 $SourceURL = "https://raw.githubusercontent.com/agp745/CORE-New-Hire-CLI/refs/heads/main/newHire.ps1"
-$DestinationURL = "$HOME\Documents\scripts\newHireCLI.ps1"
+$DestinationDir = "$HOME\Documents\scripts\"
 
-if (-not (Test-Path $DestinationURL)) {
-    Write-Host -ForegroundColor DarkGray "creating directory @ $HOME\Documents\scripts ..."
-    New-Item -ItemType File -Path $DestinationURL
+if (-not (Test-Path $DestinationDir)) {
+    Write-Host -ForegroundColor DarkGray "creating directory @ $DestinationDir"
+    New-Item -ItemType Directory -Path $DestinationDir
 }
+
+New-Item -ItemType File -Path "$DestinationDir\newHireCLI.ps1"
 
 $response = Invoke-WebRequest -Uri "$SourceURL" -Method Get
 
