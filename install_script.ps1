@@ -26,7 +26,7 @@ $response.Content > $File
 # Add alias to $PROFILE
 # =======================
 
-$CLI_Alias = "`nSet-Alias NH $File"
+$CLI_Alias = "`nSet-Alias NH '$File'"
 Add-Content -Path $PROFILE -Value $CLI_Alias
 
 Write-Host -ForegroundColor White "New Hire CLI " -NoNewline
