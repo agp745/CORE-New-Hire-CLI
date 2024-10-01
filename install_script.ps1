@@ -19,15 +19,22 @@ if (-not (Test-Path $File)) {
 # Write script to file
 # =======================
 
+Write-Host -ForegroundColor Yellow "downloading script...`n"
 $response = Invoke-WebRequest -Uri "$SourceURL" -Method Get
 $response.Content > $File
+Write-Host -ForegroundColor DarkGray "script downloaded`n"
 
 # =======================
 # Add alias to $PROFILE
 # =======================
 
+Write-Host -ForegroundColor Yellow "editing `$PROFILE...`n"
 $CLI_Alias = "`nSet-Alias NH '$File'"
 Add-Content -Path $PROFILE -Value $CLI_Alias
+Write-Host -ForegroundColor DarkGray "alias to CLI set in `$PROFILE`n"
 
-Write-Host -ForegroundColor White "New Hire CLI " -NoNewline
-Write-Host -ForegroundColor Green "installed." 
+Write-Host -ForegroundColor DarkGreen "New Hire CLI " -NoNewline
+Write-Host -ForegroundColor Green "installed.`n" 
+
+Write-Host -ForegroundColor Blue "[Usage]"
+Write-Host -ForegroundColor White "NH -Name '<name>' -PW '<password>' [options]`n"
