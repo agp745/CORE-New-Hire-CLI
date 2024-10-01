@@ -3,10 +3,18 @@
 This CLI takes the ***IT Contact Information*** form and automatically populates the fields.
 > The CLI also creates a copy of the ***IT SUPPORT- Getting started*** email template, but does not populate those fields *YET*
 
+## Installation
+
+Paste the following code into powershell
+
+```powershell
+curl -o tempInstall.ps1 https://raw.githubusercontent.com/agp745/CORE-New-Hire-CLI/refs/heads/main/install_script.ps1; .\tempInstall.ps1; Remove-Item tempInstall.ps1
+```
+
 ## Usage
 
 ```powershell
-$ NH -Name "<name>" -PW "<password>" [options] 
+NH -Name "<name>" -PW "<password>" [options] 
 ```
 
 ## REQUIRED FIELDS
