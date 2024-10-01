@@ -74,7 +74,9 @@ function printDoc {
 	}
 }
 
-$isPrinting = printDoc #printDoc is invoked here to confirm print option BEFORE everything else is processed
+if ($Print) {
+    $isPrinting = printDoc #printDoc is invoked here to confirm print option BEFORE everything else is processed
+}
 
 # =======================================
 # Edit word doc
