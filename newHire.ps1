@@ -5,6 +5,10 @@ param (
 	[switch]$Print
 )
 
+# ======================================
+# Base variables
+# ======================================
+
 $User = $env:USERNAME
 
 $CCGSourceDir = "C:\Users\$User\CCG Services, Inc\CORE Technology - Documents\IT\Communication"
@@ -13,13 +17,42 @@ $DestinationDir = "C:\Users\$User\OneDrive - CCG Services, Inc\Documents\NewHire
 $ContactInfoFile = "IT Contact Information.docx"
 $EmailFile = "IT SUPPORT - Getting started.msg"
 
+$hireName = $Name
+$hirePW = $PW
+
+# ======================================
+# Validate input
+# ======================================
+
 if (-not $Name) {
-	Write-Host -ForegroundColor Red "Error: no name provided. use '-Name' to specify a name"
-    return
+    Write-Host -ForegroundColor DarkGray "`nname: " -NoNewline
+    $hireName = Read-Host
 }
+if (-not $hireName) {
+    Write-Host -ForegroundColor Red "Error: no name provided. use '-Name' to specify a name"
+        return
+}
+
 if (-not $PW) {
+    Write-Host -ForegroundColor DarkGray "password: " -NoNewline
+    $hirePW = Read-Host
+}
+if (-not $hirePW) {
 	Write-Host -ForegroundColor Red "Error: no password provided. use '-PW' to specify a password"
     return
+}
+
+if (-not $Print) {
+    Write-Host -ForegroundColor DarkGray "do you want to print the document? [y/n]: " -NoNewline
+    $res = Read-Host
+	if ($res -eq "y" -or $res -eq "Y") {
+		$Print = $true
+	} elseif ($res -eq "n" -or $res -eq "N") {
+	    $Print = $false
+	} else {
+		Write-Host -ForegroundColor Red "Invalid input. Please enter 'y' or 'n'."
+        return
+	}
 }
 
 # ======================================
@@ -36,8 +69,8 @@ if (-not(Test-Path $DestinationDir -PathType Container)) {
 # ======================================
 
 try {
-	Copy-Item -Path "$CCGSourceDir\$ContactInfoFile" -Destination "$destinationDir\$Name.docx"
-	Copy-Item -Path "$CCGSourceDir\$EmailFile" -Destination "$destinationDir\$Name.msg"
+	Copy-Item -Path "$CCGSourceDir\$ContactInfoFile" -Destination "$destinationDir\$hireName.docx"
+	Copy-Item -Path "$CCGSourceDir\$EmailFile" -Destination "$destinationDir\$hireName.msg"
 } catch {
 	Write-Error "Failed to copy & move files for $Name. File might already exist or is currently open."
 	return
@@ -82,7 +115,7 @@ if ($Print) {
 # Edit word doc
 # =======================================
 
-$filePath = "$destinationDir\$Name.docx"
+$filePath = "$destinationDir\$hireName.docx"
 $Word = New-Object -ComObject Word.Application
 $Word.Visible = $true
 $Document = $Word.Documents.Open($filePath)
@@ -95,7 +128,7 @@ if ($Procedeo) {
 	$emailDomain = "@coreconstruction.com"
 }
 
-function Fill-Field {
+function FillField {
 	param (
 		[string]$Field,
 		[string]$Value
@@ -135,9 +168,9 @@ function Fill-Field {
 	return
 }
 
-Fill-Field -Field "Username:" -Value $Name
-Fill-Field -Field "Email:" -Value $Name
-Fill-Field -Field "Password" -Value $PW
+FillField -Field "Username:" -Value $hireName
+FillField -Field "Email:" -Value $hireName
+FillField -Field "Password" -Value $hirePW
 
 $Document.Save()
 
@@ -145,7 +178,8 @@ $Document.Save()
 if ($isPrinting -eq $true) {
 	Write-Host -ForegroundColor Yellow "`nprinting..." 
 	$Document.PrintOut()
-} else {
+} elseif ($Print -and -not $isPrinting) {
+	Write-Host -ForegroundColor Yellow "`nopening print options..." 
 	$Word.Dialogs.Item(88).Show() # opens print options
 }
 	
@@ -158,6 +192,6 @@ if ($isPrinting -eq $true) {
 # $Word.Quit()
 
 Write-Host -ForegroundColor Green "`nfiles for " -NoNewLine
-Write-Host -ForegroundColor White "$Name " -NoNewLine
+Write-Host -ForegroundColor White "$hireName " -NoNewLine
 Write-Host -ForegroundColor Green "saved at " -NoNewline
 Write-Host -ForegroundColor White "$DestinationDir`n"
