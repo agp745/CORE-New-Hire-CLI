@@ -72,8 +72,10 @@ if (-not $alias_exists) {
 }
 
 # =======================
-# Success Message
+# Load Profile + Success Message
 # =======================
+
+. $PROFILE
 
 Write-Host -ForegroundColor DarkGreen "New Hire CLI " -NoNewline
 Write-Host -ForegroundColor Green "installed.`n" 
