@@ -14,10 +14,20 @@ curl -o tempInstall.ps1 https://raw.githubusercontent.com/agp745/CORE-New-Hire-C
 ## Usage
 
 ```powershell
-NH -Name "<name>" -PW "<password>" [options] 
+> NH -Name "<name>" -PW "<password>" [options] 
+```
+> Invoking **NH** without *-Name* and/or *-PW* and/or *-Print* will prompt the user to validate those fields.  
+> Leaving *-Name* or *-PW* fields empty after validation will throw an error
+
+```powershell
+> NH
+
+name: Alejandro Perez
+password: TestPassword1937
+do you want to print the document? [y/n]: y
 ```
 
-## REQUIRED FIELDS
+## Fields
 
 ### -Name "&lt;name&gt;"
 
@@ -43,22 +53,12 @@ Will automatically print the document to your default printer.
 
 ## Features to add
 
-1. Pull ***IT Contact Information*** from cloud
-
-Currently, the CLI uses my local version of the *Information form* which is not reflective of all useres.  
-I am looking to change the CLI so that it copies the form from the Cloud and saves it locally to a temporary file or folder. 
-
-2. Install Script
-
-I am currently working out an install script that will make distribution of this CLI easy and seamless.
-- **wget** and **scoop** support
-
-3. Email template support
+1. Email template support
 
 I am still debating if I should support the ***IT SUPPORT - Getting started*** email template.  
 I need to see if the rest of the team uses that email template regularly.
 
-4. Options for other companies (SVM)
+2. Options for other companies (SVM)
 
 Currently, only Procedeo is supported since that is the only other company I deal with new hires.
 If this CLI is adopted by the whole team, I will add support for SVM
