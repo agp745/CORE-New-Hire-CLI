@@ -25,6 +25,7 @@ try {
     $response.Content > $File
 } catch {
     Write-Host -ForegroundColor Red "error invoking web request to $SourceURL"
+    Write-Host "Error: $($_.Exception)"
     return
 }
 Write-Host -ForegroundColor DarkGray "script downloaded`n"
