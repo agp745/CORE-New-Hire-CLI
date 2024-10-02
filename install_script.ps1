@@ -21,11 +21,11 @@ if (-not (Test-Path $File)) {
 
 Write-Host -ForegroundColor Yellow "downloading script...`n"
 try {
-    $response = Invoke-WebRequest -Uri "$SourceURL" -Method Get
+    $response = Invoke-WebRequest -Uri "$SourceURL" -Method Get -UseBasicParsing
     $response.Content > $File
 } catch {
     Write-Host -ForegroundColor Red "error invoking web request to $SourceURL"
-    Write-Host "Error: $($_.Exception)"
+    Write-Host -ForegroundColor DarkGray "Error: $($_.Exception)"
     return
 }
 Write-Host -ForegroundColor DarkGray "script downloaded`n"
