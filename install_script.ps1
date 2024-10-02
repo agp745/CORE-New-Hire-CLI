@@ -33,6 +33,7 @@ Write-Host -ForegroundColor DarkGray "script downloaded`n"
 # Add alias to $PROFILE
 # =======================
 
+# create $PROFILE path if it does not exist
 if (-not (Test-Path $PROFILE)) {
     try {
     $profileDir = Split-Path $PROFILE -Parent
@@ -47,14 +48,32 @@ if (-not (Test-Path $PROFILE)) {
     Write-Host -ForegroundColor DarkGray "`$PROFILE created @ $PROFILE"
 }
 
-Write-Host -ForegroundColor Yellow "editing `$PROFILE...`n"
+# skip adding alias if it already exists
+$alias_exists = $false
 try {
-    $CLI_Alias = "`nSet-Alias NH '$File'"
-    Add-Content -Path $PROFILE -Value $CLI_Alias
+    $match = Select-String -Path $PROFILE -Pattern "Set-Alias NH"
+    if ($match) {
+        $alias_exists = $true
+    }
 } catch {
-    Write-Host -ForegroundColor Red "Error: unable to create alias to CLI.`nWrite to $PROFILE unsucessful."
+    Write-Host -ForegroundColor Red "Error: unable to read $PROFILE... continuing to set alias"
 }
-Write-Host -ForegroundColor DarkGray "alias to CLI set in `$PROFILE`n"
+
+# add the alias to the $PROFILE
+if (-not $alias_exists) {
+    Write-Host -ForegroundColor Yellow "editing `$PROFILE...`n"
+    try {
+        $CLI_Alias = "`nSet-Alias NH '$File'"
+        Add-Content -Path $PROFILE -Value $CLI_Alias
+    } catch {
+        Write-Host -ForegroundColor Red "Error: unable to create alias to CLI.`nWrite to $PROFILE unsucessful."
+    }
+    Write-Host -ForegroundColor DarkGray "alias to CLI set in `$PROFILE`n"
+}
+
+# =======================
+# Success Message
+# =======================
 
 Write-Host -ForegroundColor DarkGreen "New Hire CLI " -NoNewline
 Write-Host -ForegroundColor Green "installed.`n" 
@@ -62,5 +81,5 @@ Write-Host -ForegroundColor Green "installed.`n"
 Write-Host -ForegroundColor Blue "[Usage]"
 Write-Host -ForegroundColor White "NH -Name '<name>' -PW '<password>' [options]`n"
 Write-Host -ForegroundColor DarkGray "Documentation: " -NoNewline
-Write-Host -ForegroundColor "https://github.com/agp745/CORE-New-Hire-CLI"
+Write-Host "https://github.com/agp745/CORE-New-Hire-CLI`n"
 
