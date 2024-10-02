@@ -20,17 +20,40 @@ if (-not (Test-Path $File)) {
 # =======================
 
 Write-Host -ForegroundColor Yellow "downloading script...`n"
-$response = Invoke-WebRequest -Uri "$SourceURL" -Method Get
-$response.Content > $File
+try {
+    $response = Invoke-WebRequest -Uri "$SourceURL" -Method Get
+    $response.Content > $File
+} catch {
+    Write-Host -ForegroundColor Red "error invoking web request to $SourceURL"
+    return
+}
 Write-Host -ForegroundColor DarkGray "script downloaded`n"
 
 # =======================
 # Add alias to $PROFILE
 # =======================
 
+if (-not (Test-Path $PROFILE)) {
+    try {
+    $profileDir = Split-Path $PROFILE -Parent
+    New-Item -ItemType Directory $profileDir -Force
+
+    New-Item -ItemType File $PROFILE -Force
+    } catch {
+        Write-Host -ForegroundColor Red "Error: unable to create `$PROFILE"
+        return
+    }
+
+    Write-Host -ForegroundColor DarkGray "`$PROFILE created @ $PROFILE"
+}
+
 Write-Host -ForegroundColor Yellow "editing `$PROFILE...`n"
-$CLI_Alias = "`nSet-Alias NH '$File'"
-Add-Content -Path $PROFILE -Value $CLI_Alias
+try {
+    $CLI_Alias = "`nSet-Alias NH '$File'"
+    Add-Content -Path $PROFILE -Value $CLI_Alias
+} catch {
+    Write-Host -ForegroundColor Red "Error: unable to create alias to CLI.`nWrite to $PROFILE unsucessful."
+}
 Write-Host -ForegroundColor DarkGray "alias to CLI set in `$PROFILE`n"
 
 Write-Host -ForegroundColor DarkGreen "New Hire CLI " -NoNewline
@@ -38,3 +61,6 @@ Write-Host -ForegroundColor Green "installed.`n"
 
 Write-Host -ForegroundColor Blue "[Usage]"
 Write-Host -ForegroundColor White "NH -Name '<name>' -PW '<password>' [options]`n"
+Write-Host -ForegroundColor DarkGray "Documentation: " -NoNewline
+Write-Host -ForegroundColor "https://github.com/agp745/CORE-New-Hire-CLI"
+
