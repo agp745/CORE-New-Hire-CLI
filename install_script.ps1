@@ -45,7 +45,7 @@ if (-not (Test-Path $PROFILE)) {
         return
     }
 
-    Write-Host -ForegroundColor DarkGray "`$PROFILE created @ $PROFILE"
+    Write-Host -ForegroundColor DarkGray "`n`$PROFILE created @ $PROFILE`n"
 }
 
 # skip adding alias if it already exists
